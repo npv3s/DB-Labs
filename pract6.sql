@@ -38,8 +38,8 @@ where
 select jnum,
        jnam
 from j
-where ci = min
-    (select ci
+where ci =
+    (select min(ci)
      from j);
 
 # 6. Выдать номера и названия изделий, для которых поставщик S1 поставляет несколько деталей.
@@ -95,20 +95,18 @@ where we =
 
 update p
 set pnam =
-  (select *
+  (select pnam
    from
-     (select p2.pnam
-      from p as p2
-      where p2.we =
-          (select max(p3.we)
-           from p as p3)
+     (select pnam, we
+      from p
+      order by we desc
       limit 1) as pnam)
 where pnam = 'screw';
 
 # 3. Вставить в таблицу S нового поставщика с номером S10 с фамилией Уайт из города Нью-Йорк с неизвестным рейтингом.
 
-INSERT INTO s (snum, snam, ci)
-VALUES(10, 'White', 'New-York');
+insert into s (snum, snam, ci)
+values(10, 'White', 'New-York');
 
 # 4. Изменить цвет красных деталей с весом менее 15 фунтов на желтый.
 
@@ -133,7 +131,7 @@ where st =
        (select min(st)
         from s) as st);
 
-# 6. Увеличить на 10 рейтинг всех поставщиков, рейтинг которых в настоящее время меньше, чем рейтинг поставщика S3
+# 6. Увеличить на 10 рейтинг всех поставщиков, рейтинг которых в настоящее время меньше, чем рейтинг поставщика S2
 
 update s
 set st = `st` + 10
@@ -142,7 +140,7 @@ where st <
      from
        (select st
         from s
-        where snum = 3) as st);
+        where snum = 2) as st);
 
 # 7. Удалить все изделия, для которых нет поставок деталей
 
